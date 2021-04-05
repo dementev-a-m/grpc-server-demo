@@ -1,4 +1,4 @@
-package inno.tech.grpcserverdemo;
+package ru.dementev.grpcserverdemo;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
