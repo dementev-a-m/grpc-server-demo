@@ -19,4 +19,6 @@ service ClientService{
   rpc get(ClientId) returns (Client);
   rpc save(Client) returns (google.protobuf.Empty);
   rpc remove(ClientId) returns (Client);
+  rpc observe(stream ClientId) returns (stream Client);
+
 }

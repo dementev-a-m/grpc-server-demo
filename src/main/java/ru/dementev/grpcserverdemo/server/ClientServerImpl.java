@@ -12,6 +12,9 @@ import ru.dementev.grpcserverdemo.ClientServiceGrpc;
 import ru.dementev.grpcserverdemo.entity.Client;
 import ru.dementev.grpcserverdemo.service.ClientService;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Slf4j
 @RequiredArgsConstructor
 @Component
@@ -68,5 +71,33 @@ public class ClientServerImpl extends ClientServiceGrpc.ClientServiceImplBase {
         }
 
     }
+
+    @Override
+    public StreamObserver<ClientOuterClass.ClientId> observe(StreamObserver<ClientOuterClass.Client> responseObserver) {
+       return new StreamObserver<>() {
+           @Override
+           public void onNext(ClientOuterClass.ClientId request) {
+                   log.info("Пришел запрос через observer: {}", request.getClientId());
+                   var client = clientService.findById(request.getClientId());
+                   var response = conversionService.convert(client, ClientOuterClass.Client.class);
+                   List<ClientOuterClass.Client> list = new ArrayList<>();
+                   for (int i = 0; i < 10; i++) {
+                       list.add(response);
+                   }
+                   list.forEach(responseObserver::onNext);
+           }
+
+           @Override
+           public void onError(Throwable t) {
+                log.error(t.getMessage(),t);
+           }
+
+           @Override
+           public void onCompleted() {
+               responseObserver.onCompleted();
+           }
+       };
+    }
+
 
 }

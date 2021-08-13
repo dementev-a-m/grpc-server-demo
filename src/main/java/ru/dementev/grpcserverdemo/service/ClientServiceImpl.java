@@ -34,4 +34,5 @@ public class ClientServiceImpl implements ClientService {
         clientRepository.deleteById(id);
         return client;
     }
+
 }
